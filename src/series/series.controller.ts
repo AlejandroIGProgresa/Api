@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { SerieService } from './services/serie/serie.service';
 import { SerieDto } from './dto/serie.dto/serie.dto';
 
@@ -6,7 +14,7 @@ import { SerieDto } from './dto/serie.dto/serie.dto';
 export class SeriesController {
   constructor(private readonly serieService: SerieService) {}
 
-  @Post('serie/register')
+  @Post('series/register')
   async register(@Body() createdSerieDTO: SerieDto) {
     return this.serieService.create(createdSerieDTO);
   }
@@ -19,5 +27,18 @@ export class SeriesController {
   @Get('series/:idSerie')
   async getSerie(@Param('idSerie') idSerie: string) {
     return await this.serieService.getSerie(idSerie);
+  }
+
+  @Delete('series/delete/:id')
+  async deleteSerie(@Param('idSerie') idSerie: string) {
+    return await this.serieService.deleteSerie(idSerie);
+  }
+
+  @Put('series/update/:id')
+  async updateSerie(
+    @Body() serieDTO: SerieDto,
+    @Param('idSerie') idSerie: string,
+  ) {
+    return await this.serieService.updateSerie(idSerie, serieDTO);
   }
 }

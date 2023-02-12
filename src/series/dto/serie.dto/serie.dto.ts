@@ -9,9 +9,3 @@ export class SerieDto {
   votos: number[];
   puntuacion: number;
 }
-
-/*function contar(votos: number[]): number {
-  return votos.reduce(function (a, b) {
-    return a + b;
-  }, 0);
-}*/

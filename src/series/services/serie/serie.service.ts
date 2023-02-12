@@ -7,8 +7,14 @@ import { SerieDto } from '../../dto/serie.dto/serie.dto';
 @Injectable()
 export class SerieService {
   constructor(@InjectModel('Serie') private model: Model<Serie>) {}
-  async create(createSerieDTO: SerieDto): Promise<Serie> {
-    const createdSerie = new this.model(createSerieDTO);
+  async create(createdSerieDTO: SerieDto): Promise<Serie> {
+    const createdSerie = new this.model(createdSerieDTO);
+    if (createdSerie.votos.length > 0)
+      createdSerie.puntuacion =
+        createdSerie.votos.reduce(function (a, b) {
+          return a + b;
+        }, 0) / createdSerie.votos.length;
+    else createdSerie.puntuacion = 0;
     return await createdSerie.save();
   }
   async getSeries(): Promise<Serie[]> {
@@ -16,5 +22,17 @@ export class SerieService {
   }
   async getSerie(idSerie: string): Promise<Serie> {
     return this.model.findOne({ _id: idSerie });
+  }
+
+  async deleteSerie(idSerie: string): Promise<Serie[]> {
+    return this.model.findByIdAndDelete(idSerie);
+  }
+
+  async updateSerie(idSerie: string, serieDto: SerieDto): Promise<Serie[]> {
+    return this.model.findByIdAndUpdate(
+      idSerie,
+      { $set: serieDto },
+      { new: true },
+    );
   }
 }
